@@ -1,5 +1,6 @@
 FROM alpine:3.12
 
+# Variables goes here
 ENV FLUTTER_CHANNEL=stable \
   FLUTTER_HOME=/opt/flutter \
   GLIBC_VERSION="2.32-r0" \
@@ -25,10 +26,11 @@ RUN apk -U add --no-cache \
   bash \
   curl \
   git \
+  libgcc \
   openjdk8-jre \
   unzip
 
-# Installing glibc
+# Installing glibc. It required for building Dart tools
 RUN wget -q https://alpine-pkgs.sgerrand.com/sgerrand.rsa.pub -O /etc/apk/keys/sgerrand.rsa.pub \
   && wget -q https://github.com/sgerrand/alpine-pkg-glibc/releases/download/${GLIBC_VERSION}/glibc-${GLIBC_VERSION}.apk -O /tmp/glibc.apk \
   && apk add /tmp/glibc.apk
