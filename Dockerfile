@@ -27,13 +27,15 @@ RUN apk -U add --no-cache \
   curl \
   git \
   libgcc \
-  openjdk8-jre \
+  openjdk8 \
   unzip
 
 # Installing glibc. It required for building Dart tools
 RUN wget -q https://alpine-pkgs.sgerrand.com/sgerrand.rsa.pub -O /etc/apk/keys/sgerrand.rsa.pub \
   && wget -q https://github.com/sgerrand/alpine-pkg-glibc/releases/download/${GLIBC_VERSION}/glibc-${GLIBC_VERSION}.apk -O /tmp/glibc.apk \
-  && apk add /tmp/glibc.apk
+  && wget -q https://github.com/sgerrand/alpine-pkg-glibc/releases/download/${GLIBC_VERSION}/glibc-bin-${GLIBC_VERSION}.apk -O /tmp/glibc-bin.apk \
+  && wget -q https://github.com/sgerrand/alpine-pkg-glibc/releases/download/${GLIBC_VERSION}/glibc-i18n-${GLIBC_VERSION}.apk -O /tmp/glibc-i18n.apk \
+  && apk add /tmp/glibc.apk /tmp/glibc-bin.apk /tmp/glibc-i18n.apk
 
 # Loading Android SDK
 RUN wget -q https://dl.google.com/android/repository/commandlinetools-linux-${ANDROID_SDK_TOOLS_VERSION}_latest.zip -O /tmp/android-sdk-tools.zip \
@@ -41,7 +43,7 @@ RUN wget -q https://dl.google.com/android/repository/commandlinetools-linux-${AN
   && unzip -q /tmp/android-sdk-tools.zip -d ${ANDROID_HOME}/cmdline-tools/
 
 # Clearing caches
-RUN rm -rf /tmp/* /var/cache/apk/* 
+RUN rm -rf /tmp/* /var/cache/apk/* /root/.wget-hsts
 
 # Installing needed platform tools and SDKs
 RUN yes | sdkmanager --licenses && sdkmanager \
